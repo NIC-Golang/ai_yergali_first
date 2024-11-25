@@ -1,17 +1,9 @@
 from flask import Flask, request, jsonify
-from internal.infrastructure.database.mongo_repository import MongoTagRepository
-from internal.core.usecases.classify_text import ClassifyText
-
+from internal.core.classif_text import classify_text
+from internal.db.db_connect import get_db_connection
 app = Flask(__name__)
 
-# Настройки MongoDB
-MONGO_URI = "mongodb://localhost:27017"
-DB_NAME = "book_tags_db"
-COLLECTION_NAME = "tags"
-repo = MongoTagRepository(MONGO_URI, DB_NAME, COLLECTION_NAME)
-
-# Логика
-classifier = ClassifyText(repo=repo)
+classifier = classify_text(repo=get_db_connection)
 
 @app.route("/classify_text", methods=["POST"])
 def classify_text():

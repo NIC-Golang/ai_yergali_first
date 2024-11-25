@@ -1,12 +1,18 @@
 from transformers import pipeline
+from internal.db.db_connect import get_db_connection
 
-class ClassifyText:
-    def __init__(self, repo, model_name: str = "facebook/bart-large-mnli"):
-        self.repo = repo
-        self.classifier = pipeline("zero-shot-classification", model=model_name)
+classifier = pipeline("zero-shot-classification")
 
-    def execute(self, user_input: str):
-        tags = self.repo.get_tags()
-        
-        result = self.classifier(user_input, candidate_labels=tags)
-        return result
+def classify_text(text):
+    # Получаем все теги из базы данных
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute("SELECT tag_name FROM tags")
+    tags = [row[0] for row in cursor.fetchall()]
+    cursor.close()
+    connection.close()
+
+    # Классифицируем текст по тегам
+    result = classifier(text, candidate_labels=tags)
+    print(result)
+    return result
