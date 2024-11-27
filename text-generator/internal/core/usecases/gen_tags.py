@@ -1,11 +1,12 @@
 import torch
-from transformers import T5ForConditionalGeneration, T5Tokenizer
-from internal.core.interfaces.tag_repo import TagRepositoryInterface
+from transformers import MT5ForConditionalGeneration, MT5Tokenizer
+from internal.db.postgres import tagrepo
+
 
 class GenerateTags:
-    def __init__(self, model_name: str = 'google/mt5-small', repo: TagRepositoryInterface = None, threshold: float = 0.7):
-        self.model = T5ForConditionalGeneration.from_pretrained(model_name)
-        self.tokenizer = T5Tokenizer.from_pretrained(model_name)
+    def __init__(self, model_name: str = 'google/mt5-small', repo: tagrepo = None, threshold: float = 0.7):
+        self.model = MT5ForConditionalGeneration.from_pretrained(model_name)
+        self.tokenizer = MT5Tokenizer.from_pretrained(model_name)
         self.repo = repo
         self.threshold = threshold  
 
